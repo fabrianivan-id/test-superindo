@@ -1,35 +1,16 @@
 package main
 
 import (
-	"superindo-api/config"
-	"superindo-api/internal/handler"
-	"superindo-api/internal/repository"
-	"superindo-api/internal/service"
-
-	"github.com/gin-gonic/gin"
+    "log"
+    "net/http"
+    "github.com/fabrianivan-id/test-superindo/routes"
 )
 
 func main() {
-	// Setup database connection
-	db := config.SetupDatabase()
-	defer config.CloseDatabase(db)
+    router := routes.SetupRoutes()
 
-	// Setup Redis connection
-	redisClient := config.SetupRedis()
-	defer config.CloseRedis(redisClient)
-
-	// Initialize dependencies
-	productRepo := repository.NewProductRepository(db)
-	productService := service.NewProductService(productRepo, redisClient)
-	productHandler := handler.NewProductHandler(productService)
-
-	// Create router
-	r := gin.Default()
-
-	// Product endpoints
-	r.POST("/product", productHandler.CreateProduct)
-	r.GET("/product", productHandler.GetProducts)
-
-	// Start server
-	r.Run(":8080")
+    log.Println("Starting server on :8080")
+    if err := http.ListenAndServe(":8080", router); err != nil {
+        log.Fatalf("Could not start server: %s\n", err)
+    }
 }
