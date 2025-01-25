@@ -1,4 +1,3 @@
-# Use the official Golang image
 FROM golang:1.23.5
 
 # Set environment variables
@@ -7,23 +6,23 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64
 
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Go modules and dependencies
+# Copy go.mod and go.sum
 COPY go.mod go.sum ./
 
 # Download dependencies
 RUN go mod download
 
-# Copy the application files
+# Copy the entire project
 COPY . .
 
-# Build the application
-RUN go build -o main .
+# Build the binary from the cmd directory
+RUN go build -o main ./cmd/main.go
 
 # Expose the application port
 EXPOSE 8080
 
-# Run the application
-CMD ["./main"]
+# Run the binary
+CMD ["/app/main"]
