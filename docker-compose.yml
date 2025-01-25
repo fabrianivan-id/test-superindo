@@ -25,8 +25,9 @@ services:
       - db_data:/var/lib/postgresql/data
 
   cache:
-    image: redis:latest
+    image: redis:6.2
     restart: always
 
 volumes:
   db_data:
+    driver: local
