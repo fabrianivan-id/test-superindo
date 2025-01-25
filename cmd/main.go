@@ -1,35 +1,40 @@
 package main
 
 import (
-	"superindo-api/config"
-	"superindo-api/internal/handler"
-	"superindo-api/internal/repository"
-	"superindo-api/internal/service"
-
-	"github.com/gin-gonic/gin"
+    "github.com/gin-gonic/gin"
+    "super-indo-api/config"
+    "super-indo-api/controllers"
+    "super-indo-api/repositories"
+    "super-indo-api/services"
 )
 
 func main() {
-	// Setup database connection
-	db := config.SetupDatabase()
-	defer config.CloseDatabase(db)
+    // Load configuration
+    cfg := config.LoadConfig()
 
-	// Setup Redis connection
-	redisClient := config.SetupRedis()
-	defer config.CloseRedis(redisClient)
+    // Initialize database and cache
+    db := config.ConnectDatabase(cfg)
+    redisClient := config.ConnectRedis(cfg)
 
-	// Initialize dependencies
-	productRepo := repository.NewProductRepository(db)
-	productService := service.NewProductService(productRepo, redisClient)
-	productHandler := handler.NewProductHandler(productService)
+    // Initialize repositories
+    productRepo := repositories.NewProductRepository(db)
 
-	// Create router
-	r := gin.Default()
+    // Initialize services
+    productService := services.NewProductService(productRepo, redisClient)
 
-	// Product endpoints
-	r.POST("/product", productHandler.CreateProduct)
-	r.GET("/product", productHandler.GetProducts)
+    // Initialize controllers
+    productController := controllers.NewProductController(productService)
 
-	// Start server
-	r.Run(":8080")
+    // Set up Gin router
+    router := gin.Default()
+
+    // Define routes
+    router.POST("/product", productController.AddProduct)
+    router.GET("/product", productController.ListProducts)
+    router.GET("/product/search", productController.SearchProduct)
+    router.GET("/product/filter", productController.FilterProducts)
+    router.GET("/product/sort", productController.SortProducts)
+
+    // Start the server
+    router.Run(cfg.ServerAddress)
 }

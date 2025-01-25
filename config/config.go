@@ -1,49 +1,42 @@
 package config
 
 import (
-	"context"
 	"log"
-	"superindo-api/internal/model"
 
-	"github.com/go-redis/redis/v8"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
+	"github.com/spf13/viper"
 )
 
-func SetupDatabase() *gorm.DB {
-	dsn := "user:password@tcp(127.0.0.1:3306)/superindo?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("Failed to connect to database:", err)
-	}
-
-	db.AutoMigrate(&model.Product{})
-	return db
+type Config struct {
+	Database struct {
+		Host     string `mapstructure:"DB_HOST"`
+		Port     string `mapstructure:"DB_PORT"`
+		User     string `mapstructure:"DB_USER"`
+		Password string `mapstructure:"DB_PASSWORD"`
+		Name     string `mapstructure:"DB_NAME"`
+	} `mapstructure:"database"`
+	Redis struct {
+		Host     string `mapstructure:"REDIS_HOST"`
+		Port     string `mapstructure:"REDIS_PORT"`
+		Password string `mapstructure:"REDIS_PASSWORD"`
+	} `mapstructure:"redis"`
 }
 
-func CloseDatabase(db *gorm.DB) {
-	dbInstance, err := db.DB()
-	if err != nil {
-		log.Fatal("Failed to close database connection:", err)
-	}
-	dbInstance.Close()
-}
+func LoadConfig() (*Config, error) {
+	var config Config
 
-func SetupRedis() *redis.Client {
-	client := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-		Password: "", // no password set
-		DB: 0,          // use default DB
-	})
+	viper.SetConfigName("config")
+	viper.SetConfigType("env")
+	viper.AddConfigPath(".")
 
-	ctx := context.Background()
-	if err := client.Ping(ctx).Err(); err != nil {
-		log.Fatal("Failed to connect to Redis:", err)
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Error reading config file, %s", err)
+		return nil, err
 	}
 
-	return client
-}
+	if err := viper.Unmarshal(&config); err != nil {
+		log.Fatalf("Unable to decode into struct, %v", err)
+		return nil, err
+	}
 
-func CloseRedis(client *redis.Client) {
-	client.Close()
+	return &config, nil
 }
