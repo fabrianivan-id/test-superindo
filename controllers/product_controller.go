@@ -2,11 +2,10 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
+	"github.com/fabrianivan-id/test-superindo/models"
+	"github.com/fabrianivan-id/test-superindo/services"
 	"github.com/gin-gonic/gin"
-	"super-indo-api/models"
-	"super-indo-api/services"
 )
 
 type ProductController struct {

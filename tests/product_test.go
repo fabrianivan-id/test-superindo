@@ -7,11 +7,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/fabrianivan-id/test-superindo/controllers"
+	"github.com/fabrianivan-id/test-superindo/models"
+	"github.com/fabrianivan-id/test-superindo/services"
 	"github.com/gin-gonic/gin"
-	"super-indo-api/controllers"
-	"super-indo-api/models"
-	"super-indo-api/services"
+	"github.com/stretchr/testify/assert"
 )
 
 func setupRouter() *gin.Engine {

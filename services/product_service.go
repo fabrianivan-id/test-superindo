@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/yourusername/super-indo-api/models"
-	"github.com/yourusername/super-indo-api/repositories"
+	"github.com/fabrianivan-id/test-superindo/models"
+	"github.com/fabrianivan-id/test-superindo/repositories"
 )
 
 type ProductService struct {
