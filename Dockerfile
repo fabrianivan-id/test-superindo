@@ -1,22 +1,29 @@
-# Build Stage
-FROM golang:1.23.5 AS builder
+# Use the official Golang image
+FROM golang:1.23.5
 
+# Set environment variables
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
+
+# Set the working directory
 WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
+# Copy the Go modules and dependencies
+COPY go.mod go.sum ./
+
+# Download dependencies
 RUN go mod download
 
-COPY ./*.go ./
+# Copy the application files
+COPY . .
+
+# Build the application
 RUN go build -o main .
 
-# Final Stage
-FROM alpine:latest
-
-WORKDIR /root/
-COPY --from=builder /app/main .
-COPY /migrations /migrations
-
+# Expose the application port
 EXPOSE 8080
 
+# Run the application
 CMD ["./main"]
