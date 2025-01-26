@@ -1,6 +1,6 @@
-module github.com/yourusername/super-indo-api
+module github.com/fabrianivan-id/test-superindo
 
-go 1.20
+go 1.22
 
 require (
     github.com/gin-gonic/gin v1.7.4
