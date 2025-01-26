@@ -2,7 +2,7 @@ package repository
 
 import (
     "database/sql"
-    "superindo-product-api/internal/model"
+    "test-superindo/internal/model"
     "fmt"
 )
 
