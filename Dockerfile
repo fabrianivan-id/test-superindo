@@ -1,26 +1,33 @@
-# Use the official Golang image
-FROM golang:1.23.5
+# Use an official Golang image as a base image for building the app
+FROM golang:1.23.5 AS builder
 
-# Set environment variables
-ENV GO111MODULE=on \
-    CGO_ENABLED=0 \
-    GOOS=linux \
-    GOARCH=amd64
-
-# Set the working directory
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the Go modules and dependencies
+# Copy go.mod and go.sum files for dependency installation
 COPY go.mod go.sum ./
-
-# Download dependencies
 RUN go mod download
 
-# Copy the application files
-COPY . .
+# Copy the application source code
+COPY . ./
 
-# Build the application
+# Build the application binary
 RUN go build -o main .
+
+# Use a lightweight image for the final stage
+FROM alpine:latest
+
+# Install required tools (e.g., for MySQL or Redis connectivity)
+RUN apk --no-cache add ca-certificates tzdata
+
+# Set the working directory in the final container
+WORKDIR /root/
+
+# Copy the compiled binary from the builder stage
+COPY --from=builder /app/main .
+
+# Copy migration files if needed
+COPY /migrations /migrations
 
 # Expose the application port
 EXPOSE 8080
