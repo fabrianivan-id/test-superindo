@@ -7,21 +7,21 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/fabrianivan-id/test-superindo/controllers"
-	"github.com/fabrianivan-id/test-superindo/models"
-	"github.com/fabrianivan-id/test-superindo/services"
-	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"github.com/gin-gonic/gin"
+	"super-indo-api/controllers"
+	"super-indo-api/models"
 )
 
 func setupRouter() *gin.Engine {
-	gin.SetMode(gin.TestMode)
-	router := gin.Default()
-	productController := controllers.NewProductController(services.NewProductService())
-	router.POST("/product", productController.AddProduct)
-	router.GET("/product", productController.ListProducts)
-	router.GET("/product/search", productController.SearchProduct)
-	return router
+	r := gin.Default()
+	productController := controllers.ProductController{}
+	r.POST("/product", productController.AddProduct)
+	r.GET("/product", productController.GetProducts)
+	r.GET("/product/search", productController.SearchProduct)
+	r.GET("/product/filter", productController.FilterProducts)
+	r.GET("/product/sort", productController.SortProducts)
+	return r
 }
 
 func TestAddProduct(t *testing.T) {
@@ -29,36 +29,57 @@ func TestAddProduct(t *testing.T) {
 
 	product := models.Product{
 		Name:  "Test Product",
-		Type:  "Sayuran",
-		Price: 10000,
+		Type:  "Fruits",
+		Price: 10.99,
 	}
 
 	jsonProduct, _ := json.Marshal(product)
+
 	req, _ := http.NewRequest("POST", "/product", bytes.NewBuffer(jsonProduct))
 	req.Header.Set("Content-Type", "application/json")
 
-	res := httptest.NewRecorder()
-	router.ServeHTTP(res, req)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
 
-	assert.Equal(t, http.StatusOK, res.Code)
+	assert.Equal(t, http.StatusCreated, w.Code)
 }
 
-func TestListProducts(t *testing.T) {
+func TestGetProducts(t *testing.T) {
 	router := setupRouter()
 
 	req, _ := http.NewRequest("GET", "/product", nil)
-	res := httptest.NewRecorder()
-	router.ServeHTTP(res, req)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
 
-	assert.Equal(t, http.StatusOK, res.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
 }
 
 func TestSearchProduct(t *testing.T) {
 	router := setupRouter()
 
-	req, _ := http.NewRequest("GET", "/product/search?id=1", nil)
-	res := httptest.NewRecorder()
-	router.ServeHTTP(res, req)
+	req, _ := http.NewRequest("GET", "/product/search?name=Test Product", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
 
-	assert.Equal(t, http.StatusOK, res.Code)
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestFilterProducts(t *testing.T) {
+	router := setupRouter()
+
+	req, _ := http.NewRequest("GET", "/product/filter?type=Fruits", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestSortProducts(t *testing.T) {
+	router := setupRouter()
+
+	req, _ := http.NewRequest("GET", "/product/sort?by=price", nil)
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
 }

@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/fabrianivan-id/test-superindo/models"
-	"github.com/fabrianivan-id/test-superindo/repositories"
+	"super-indo-api/models"
+	"super-indo-api/repositories"
 )
 
 type ProductService struct {
@@ -21,33 +21,27 @@ func (s *ProductService) AddProduct(product *models.Product) error {
 		return errors.New("product name and type are required")
 	}
 	product.CreatedAt = time.Now()
-	return s.repo.Add(product)
+	return s.repo.CreateProduct(product)
 }
 
-func (s *ProductService) GetAllProducts() ([]models.Product, error) {
-	return s.repo.GetAll()
+func (s *ProductService) GetProducts() ([]models.Product, error) {
+	return s.repo.GetAllProducts()
 }
 
-func (s *ProductService) SearchProductByID(id int) (*models.Product, error) {
-	return s.repo.FindByID(id)
+func (s *ProductService) SearchProduct(id int, name string) (*models.Product, error) {
+	if id > 0 {
+		return s.repo.FindProductByID(id)
+	}
+	if name != "" {
+		return s.repo.FindProductByName(name)
+	}
+	return nil, errors.New("either id or name must be provided for search")
 }
 
-func (s *ProductService) SearchProductByName(name string) ([]models.Product, error) {
-	return s.repo.FindByName(name)
+func (s *ProductService) FilterProducts(productType string) ([]models.Product, error) {
+	return s.repo.FilterProducts(productType)
 }
 
-func (s *ProductService) FilterProductsByType(productType string) ([]models.Product, error) {
-	return s.repo.FilterByType(productType)
-}
-
-func (s *ProductService) SortProductsByDate() ([]models.Product, error) {
-	return s.repo.SortByDate()
-}
-
-func (s *ProductService) SortProductsByPrice() ([]models.Product, error) {
-	return s.repo.SortByPrice()
-}
-
-func (s *ProductService) SortProductsByName() ([]models.Product, error) {
-	return s.repo.SortByName()
+func (s *ProductService) SortProducts(sortBy string) ([]models.Product, error) {
+	return s.repo.SortProducts(sortBy)
 }

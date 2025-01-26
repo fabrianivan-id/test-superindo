@@ -2,41 +2,24 @@ package config
 
 import (
 	"log"
+	"os"
 
-	"github.com/spf13/viper"
+	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	Database struct {
-		Host     string `mapstructure:"DB_HOST"`
-		Port     string `mapstructure:"DB_PORT"`
-		User     string `mapstructure:"DB_USER"`
-		Password string `mapstructure:"DB_PASSWORD"`
-		Name     string `mapstructure:"DB_NAME"`
-	} `mapstructure:"database"`
-	Redis struct {
-		Host     string `mapstructure:"REDIS_HOST"`
-		Port     string `mapstructure:"REDIS_PORT"`
-		Password string `mapstructure:"REDIS_PASSWORD"`
-	} `mapstructure:"redis"`
+	DatabaseURL string
+	RedisURL    string
 }
 
-func LoadConfig() (*Config, error) {
-	var config Config
-
-	viper.SetConfigName("config")
-	viper.SetConfigType("env")
-	viper.AddConfigPath(".")
-
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
-		return nil, err
+func LoadConfig() *Config {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
 	}
 
-	if err := viper.Unmarshal(&config); err != nil {
-		log.Fatalf("Unable to decode into struct, %v", err)
-		return nil, err
+	return &Config{
+		DatabaseURL: os.Getenv("DATABASE_URL"),
+		RedisURL:    os.Getenv("REDIS_URL"),
 	}
-
-	return &config, nil
 }

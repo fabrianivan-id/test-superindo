@@ -2,14 +2,17 @@ package controllers
 
 import (
 	"net/http"
-
-	"github.com/fabrianivan-id/test-superindo/models"
-	"github.com/fabrianivan-id/test-superindo/services"
 	"github.com/gin-gonic/gin"
+	"super-indo-api/models"
+	"super-indo-api/services"
 )
 
 type ProductController struct {
-	ProductService services.ProductService
+	service services.ProductService
+}
+
+func NewProductController(service services.ProductService) *ProductController {
+	return &ProductController{service: service}
 }
 
 func (pc *ProductController) AddProduct(c *gin.Context) {
@@ -18,15 +21,15 @@ func (pc *ProductController) AddProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if err := pc.ProductService.AddProduct(&product); err != nil {
+	if err := pc.service.CreateProduct(&product); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusCreated, product)
 }
 
-func (pc *ProductController) ListProducts(c *gin.Context) {
-	products, err := pc.ProductService.ListProducts()
+func (pc *ProductController) GetProducts(c *gin.Context) {
+	products, err := pc.service.GetAllProducts()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -35,10 +38,8 @@ func (pc *ProductController) ListProducts(c *gin.Context) {
 }
 
 func (pc *ProductController) SearchProduct(c *gin.Context) {
-	id := c.Query("id")
 	name := c.Query("name")
-
-	product, err := pc.ProductService.SearchProduct(id, name)
+	product, err := pc.service.FindProductByName(name)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -48,7 +49,7 @@ func (pc *ProductController) SearchProduct(c *gin.Context) {
 
 func (pc *ProductController) FilterProducts(c *gin.Context) {
 	productType := c.Query("type")
-	products, err := pc.ProductService.FilterProducts(productType)
+	products, err := pc.service.FilterProducts(productType)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -58,7 +59,7 @@ func (pc *ProductController) FilterProducts(c *gin.Context) {
 
 func (pc *ProductController) SortProducts(c *gin.Context) {
 	sortBy := c.Query("sort_by")
-	products, err := pc.ProductService.SortProducts(sortBy)
+	products, err := pc.service.SortProducts(sortBy)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
