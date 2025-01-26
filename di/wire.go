@@ -2,10 +2,10 @@ package di
 
 import (
 	"github.com/google/wire"
-	"super-indo-api/controllers"
-	"super-indo-api/database"
-	"super-indo-api/repositories"
-	"super-indo-api/services"
+	"github.com/fabrianivan-id/test-superindo/controllers"
+	"github.com/fabrianivan-id/test-superindo/database"
+	"github.com/fabrianivan-id/test-superindo/repositories"
+	"github.com/fabrianivan-id/test-superindo/services"
 )
 
 var SuperIndoSet = wire.NewSet(

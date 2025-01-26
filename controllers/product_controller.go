@@ -3,8 +3,8 @@ package controllers
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
-	"super-indo-api/models"
-	"super-indo-api/services"
+	"github.com/fabrianivan-id/test-superindo/models"
+	"github.com/fabrianivan-id/test-superindo/services"
 )
 
 type ProductController struct {

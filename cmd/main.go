@@ -3,7 +3,7 @@ package main
 import (
     "log"
     "net/http"
-    "super-indo-api/routes"
+    "github.com/fabrianivan-id/test-superindo/routes"
 )
 
 func main() {

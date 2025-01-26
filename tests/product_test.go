@@ -9,8 +9,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/gin-gonic/gin"
-	"super-indo-api/controllers"
-	"super-indo-api/models"
+	"github.com/fabrianivan-id/test-superindo/controllers"
+	"github.com/fabrianivan-id/test-superindo/models"
 )
 
 func setupRouter() *gin.Engine {

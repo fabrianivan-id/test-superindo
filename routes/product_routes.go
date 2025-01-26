@@ -2,7 +2,7 @@ package routes
 
 import (
     "github.com/gin-gonic/gin"
-    "super-indo-api/controllers"
+    "github.com/fabrianivan-id/test-superindo/controllers"
 )
 
 func SetupProductRoutes(router *gin.Engine, productController *controllers.ProductController) {

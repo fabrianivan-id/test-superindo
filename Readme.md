@@ -15,7 +15,7 @@ The Super Indo API is a RESTful API designed to manage product data for Super In
 
 ## Project Structure
 ```
-super-indo-api
+github.com/fabrianivan-id/test-superindo
 ├── cmd
 │   └── main.go
 ├── config
@@ -52,8 +52,8 @@ super-indo-api
 ## Setup Instructions
 1. **Clone the repository:**
    ```
-   git clone https://github.com/yourusername/super-indo-api.git
-   cd super-indo-api
+   git clone https://github.com/yourusername/github.com/fabrianivan-id/test-superindo.git
+   cd github.com/fabrianivan-id/test-superindo
    ```
 
 2. **Install dependencies:**
@@ -91,12 +91,12 @@ super-indo-api
 To run the application in a Docker container, use the following commands:
 1. Build the Docker image:
    ```
-   docker build -t super-indo-api .
+   docker build -t github.com/fabrianivan-id/test-superindo .
    ```
 
 2. Run the Docker container:
    ```
-   docker run -p 8080:8080 super-indo-api
+   docker run -p 8080:8080 github.com/fabrianivan-id/test-superindo
    ```
 
 ## Testing

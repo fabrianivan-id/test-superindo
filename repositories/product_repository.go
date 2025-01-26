@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"super-indo-api/models"
+	"github.com/fabrianivan-id/test-superindo/models"
 )
 
 type ProductRepository struct {
