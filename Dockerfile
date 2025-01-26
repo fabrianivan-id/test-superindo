@@ -1,27 +1,14 @@
-FROM golang:1.23.5
+FROM golang:1.19-alpine
 
-## We create an /app directory within our
-## image that will hold our application source
-## files
-RUN mkdir /app
-
-## We specify that we now wish to execute 
-## any further commands inside our /app
-## directory
 WORKDIR /app
 
-COPY go.mod /app
-COPY go.sum /app
+COPY go.mod go.sum ./
 RUN go mod download
 
-## We copy everything in the root directory
-## into our /app directory
-ADD . /app
+COPY . .
 
-## we run go build to compile the binary
-## executable of our Go program
-RUN go build -o main .
+RUN go build -o main ./cmd
 
-## Our start command which kicks off
-## our newly created binary executable
-CMD ["/app/main"]
+EXPOSE 8080
+
+CMD ["./main"]

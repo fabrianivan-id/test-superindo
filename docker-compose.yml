@@ -16,6 +16,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: superindo
+    volumes:
+      - db_data:/var/lib/mysql
 
   redis:
     image: redis:6
+
+volumes:
+  db_data:
